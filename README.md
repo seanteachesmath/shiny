@@ -1,1 +1,1 @@
-<./regression/>
+Landing page for shiny apps.
