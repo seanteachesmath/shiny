@@ -1,0 +1,6 @@
+---
+title: "Shiny apps"
+format: html
+---
+
+[FitzHugh-Nagumo model](./FHN/index.html)

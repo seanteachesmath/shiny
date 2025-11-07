@@ -41,8 +41,8 @@ ui <- fluidPage(
         ),
 
         mainPanel(
-           plotOutput("solsPlot"),
-           plotOutput("phasePlot")
+           plotOutput("solsPlot")#,
+#           plotOutput("phasePlot")
         )
     )
 )
@@ -57,7 +57,7 @@ observe({
       list(c(dv, dw))
     })}
   
-  parms <- c(a=input$a, Iapp = input$Iapp, eps=input$eps, gamma=input$gamma) ## parameters
+  parms <- c(a = input$a, Iapp = input$Iapp, eps = input$eps, gamma = input$gamma) ## parameters
   times <- seq(0, 100, by=0.1) ## vector of time steps
   xstart <- c(v = input$v0, w = 0) ## initial conditions
   out <- as.data.frame(lsoda(xstart, times, FHNmod, parms))
@@ -69,6 +69,7 @@ observe({
     output$solsPlot <- renderPlot({
   matplot(out$time, out[, c("v", "w")], ylim = range(c(vr, wr)), col = c("black", "red"), lty = 1, lwd = 2, type = 'l', las = 1, xlab = "Time", ylab = "V, w")
     })
+    
     output$phasePlot <- renderPlot({
       plot(out[, c("v", "w")], ylim = yr, col = c("black"), lty = 1, lwd = 2, type = 'l', las = 1)
       plot(vnull, xlim = vr, ylim = yr, col = "blue", lty = 1, lwd = 2, add = TRUE)
