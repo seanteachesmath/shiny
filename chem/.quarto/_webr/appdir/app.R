@@ -1,18 +1,3 @@
----
-title: "Enzyme chemistry"
-format:
-  html:
-    grid:
-      body-width: 1400px
-    resources:
-      - shinylive-sw.js
-filters:
-  - shinylive
----
-
-```{shinylive-r}
-#| standalone: true
-
 library(deSolve)
 library(shiny)
 
@@ -275,4 +260,3 @@ server <- function(input, output) {
 
 # Run the application
 shinyApp(ui = ui, server = server)
-```

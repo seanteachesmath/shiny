@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Enzyme chemistry</title>
+<title>Discrete-time matrix models</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,28 +23,28 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dc55a5b9e770e841cd82e46aadbfb9b0.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-fd207a1b51fa9a482616a7f739ebbd32.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
-<meta name="shinylive:serviceworker_dir" content=".">
-<script src="site_libs/quarto-contrib/shinylive-0.9.1/shinylive/load-shinylive-sw.js" type="module"></script>
-<script src="site_libs/quarto-contrib/shinylive-0.9.1/shinylive/run-python-blocks.js" type="module"></script>
-<link href="site_libs/quarto-contrib/shinylive-0.9.1/shinylive/shinylive.css" rel="stylesheet">
-<link href="site_libs/quarto-contrib/shinylive-quarto-css/shinylive-quarto.css" rel="stylesheet">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dc55a5b9e770e841cd82e46aadbfb9b0.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-fd207a1b51fa9a482616a7f739ebbd32.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<meta name="shinylive:serviceworker_dir" content="..">
+<script src="../site_libs/quarto-contrib/shinylive-0.9.1/shinylive/load-shinylive-sw.js" type="module"></script>
+<script src="../site_libs/quarto-contrib/shinylive-0.9.1/shinylive/run-python-blocks.js" type="module"></script>
+<link href="../site_libs/quarto-contrib/shinylive-0.9.1/shinylive/shinylive.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/shinylive-quarto-css/shinylive-quarto.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -74,7 +74,6 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
-<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="quarto-light">
@@ -92,7 +91,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Enzyme chemistry</h1>
+<h1 class="title">Discrete-time matrix models</h1>
 </div>
 
 
@@ -113,262 +112,107 @@ ul.task-list li input[type="checkbox"] {
 #|   shinylive does not work in self-contained HTML documents.
 #|   Please set `embed-resources: false` in your metadata.
 #| standalone: true
-library(deSolve)
+#| viewerHeight: 600
 library(shiny)
 
 # Define UI for application that draws a histogram
 ui &lt;- fluidPage(
   # Application title
-  titlePanel("Enzyme-Substrate Kinetics"),
+  titlePanel("Discrete-time population models"),
   
   # Sidebar with a slider input for number of bins
   sidebarLayout(
     sidebarPanel(
       sliderInput(
-        "S0",
-        withMathJax(helpText("Initial Substrate, \\(S_0 = \\)")),
+        "alpha",
+        withMathJax(helpText("\\(\\alpha = \\)")),
+        min = 0,
+        max = 1,
+        value = 0.1,
+        step = 0.01
+      ),
+      sliderInput(
+        "beta",
+        withMathJax(helpText("\\(\\beta = \\)")),
         min = 0,
         max = 100,
-        value = 30,
+        value = 10,
         step = 1
       ),
       sliderInput(
-        "E0",
-        withMathJax(helpText("Initial Free Enzyme, \\(E_0 = \\)")),
+        "sigma",
+        withMathJax(helpText("\\(\\sigma = \\)")),
+        min = 0,
+        max = 1,
+        value = 0.1,
+        step = 0.01
+      ),
+            sliderInput(
+        "V0",
+        withMathJax(helpText("\\(V_{0} = \\)")),
         min = 0,
         max = 100,
-        value = 30,
+        value = 10,
         step = 1
       ),
-      sliderInput(
-        "I0",
-        withMathJax(helpText("Initial Inhibitor, \\(I_0 = \\)")),
+            sliderInput(
+        "F0",
+        withMathJax(helpText("\\(F_{0} = \\)")),
         min = 0,
         max = 100,
-        value = 0,
+        value = 10,
         step = 1
       ),
       sliderInput(
         "tmax",
         withMathJax(helpText("\\(t_{\\text{max}} = \\)")),
-        min = 100,
-        max = 300,
-        value = 100,
+        min = 10,
+        max = 100,
+        value = 50,
         step = 10
-      ),
-      # sliderInput("k1", withMathJax(helpText("\\(k_{1} = \\)")),
-      #             min = 0, max = 0.5, value = 0.05, step = 0.01),
-      # sliderInput("k1m", withMathJax(helpText("\\(k_{-1} = \\)")),
-      #             min = 0, max = 0.5, value = 0.05, step = 0.01),
-      # sliderInput("kp", withMathJax(helpText("\\(k_{p} = \\)")),
-      #             min = 0, max = 0.5, value = 0.05, step = 0.01),
-      # sliderInput("k3", withMathJax(helpText("\\(k_{3} = \\)")),
-      #             min = 0, max = 0.5, value = 0.0, step = 0.01),
-      # sliderInput("k3m", withMathJax(helpText("\\(k_{-3} = \\)")),
-      #             min = 0, max = 0.5, value = 0.0, step = 0.01),
-      #      ),
-      #      sidebarPanel(
-      # sliderInput("S0", withMathJax(helpText("Initial Substrate, \\(S_0 = \\)")), min = 0, max = 100, value = 30, step = 1),
-      # sliderInput("E0", withMathJax(helpText("Initial Free Enzyme, \\(E_0 = \\)")),  min = 0, max = 100,   value = 30,   step = 1),
-      # sliderInput("I0", withMathJax(helpText("Initial Inhibitor, \\(I_0 = \\)")), min = 0, max = 100, value = 0, step = 1),
-      sliderInput(
-        "k1",
-        withMathJax(helpText("\\(k_{1} = \\)")),
-        min = 0,
-        max = 0.5,
-        value = 0.05,
-        step = 0.01
-      ),
-      sliderInput(
-        "k1m",
-        withMathJax(helpText("\\(k_{-1} = \\)")),
-        min = 0,
-        max = 0.5,
-        value = 0.05,
-        step = 0.01
-      ),
-      sliderInput(
-        "kp",
-        withMathJax(helpText("\\(k_{p} = \\)")),
-        min = 0,
-        max = 0.5,
-        value = 0.05,
-        step = 0.01
-      ),
-      sliderInput(
-        "k3",
-        withMathJax(helpText("\\(k_{3} = \\)")),
-        min = 0,
-        max = 0.5,
-        value = 0.0,
-        step = 0.01
-      ),
-      sliderInput(
-        "k3m",
-        withMathJax(helpText("\\(k_{-3} = \\)")),
-        min = 0,
-        max = 0.5,
-        value = 0.0,
-        step = 0.01
       ),
     ),
     # Show a plot of the generated distribution
     mainPanel(withMathJax(
-      helpText(
-        "Below are results of a the dynamics of an enzyme-catalyzed reaction in the presence of an inhibitor. The defaults assume a reaction **without** inhibitors. You are encouraged to systematically experiment with initial conditions, then with parameters.
-
-                           In the absence of inhibitors, the \\(SC\\)-plane (here \\(SC_{1}\\)-plane) is shown corresponding to the solution to the original model in the numerically-generated phase plane (no nullclines)."
-      )
-    ), plotOutput("plot1"))
+      helpText("")
+    ), 
+    plotOutput("plot1"),
+    plotOutput("plot2"))
   )
 )
 
 # Define server logic required to draw a histogram
 server &lt;- function(input, output) {
   observe({
-    ## parameters
-    (parms &lt;- c(
-      k1 = input$k1,
-      k1m = input$k1m,
-      kp = input$kp,
-      k3 = input$k3,
-      k3m = input$k3m
-    ))
-    ## vector of time steps
-    (times &lt;- seq(0, input$tmax, by = 0.1))
-    ## initial conditions
-    (xstart &lt;- c(
-      S = input$S0,
-      E = input$E0,
-      C1 = 0,
-      P = 0,
-      I = input$I0,
-      C2 = 0
-    ))
+    A &lt;- matrix(c(input$alpha, input$beta, input$sigma, 0), nrow = 2, ncol = 2, byrow = TRUE)
+    N &lt;- matrix(c(input$V0, input$F0), nrow = 2, ncol = 1, byrow = TRUE)
+    eig &lt;- eigen(A)
     
+    idx &lt;- which(eig$values == max(eig$values))
     
-    # a Predator-Prey model
-    PPmod &lt;- function(t, x, parms) {
-      with(as.list(c(parms, x)), {
-        dS &lt;- -k1 * S * E + k1m * C1
-        dE &lt;- -k1 * S * E + (k1m + kp) * C1 - k3 * I * E + k3m * C2
-        dC1 &lt;- k1 * S * E - (k1m + kp) * C1
-        dP &lt;- kp * C1
-        dI &lt;- -k3 * I * E + k3m * C2
-        dC2 &lt;- k3 * I * E - k3m * C2
-        list(c(dS, dE, dC1, dP, dI, dC2))
-      })
+    sol &lt;- N
+    for(i in 2:input$tmax){
+      sol &lt;- cbind(sol, A%*%sol[, i - 1])
     }
-    
     # # # # # # # # # # # # # # # #
     
-    
-    ## plot 2
-    
-    
-    out &lt;- as.data.frame(lsoda(xstart, times, PPmod, parms))
-    xmax &lt;- ymax &lt;- 100 * ceiling(max(out[, c("S", "E", "I", "C1", "C2")]) / 100)
-    
     output$plot1 &lt;- renderPlot({
-      layout(matrix(c(1, 2, 3, 4, 5, 5), byrow = TRUE, ncol = 2))
-      par(mar = c(4.1, 5.1, 0.8, 0.8))
-      
-      
-      # # # # # # # # # # # # # # # #
-      ## plot 1
-      
-      plot(
-        out[, c("time", "E")],
-        type = 'l',
-        lty = 1,
-        ylim = c(0, max(c(xmax, ymax))),
-        xlab = 'Time',
-        ylab = "Free Enzyme\nConcentration",
-        las = 1,
-        lwd = 2,
-        font.lab = 2,
-        cex = 1.35
-      )
-      matplot(
-        out$time,
-        out[, c('S', 'I')],
-        type = 'l',
-        lwd = 2,
-        col = c('blue', 'red'),
-        lty = 1,
-        ylim = c(0, max(c(xmax, ymax))),
-        xlab = 'Time',
-        ylab = "Substrate and Inhibitor\nConcentration",
-        las = 1,
-        font.lab = 2,
-        cex = 1.35
-      )
-      legend(
-        "topright",
-        c("Free Substrate", "Free Inhibitor"),
-        col = c("blue", "red"),
-        lty = 1,
-        lwd = 2
-      )
-      matplot(
-        out$time,
-        out[, c('C1', 'C2')],
-        type = 'l',
-        lwd = 2,
-        col = c('green', 'gray'),
-        lty = 1,
-        ylim = c(0, max(c(xmax, ymax))),
-        xlab = 'Time',
-        ylab = 'Complex',
-        las = 1,
-        font.lab = 2,
-        cex = 1.35
-      )
-      legend(
-        "topright",
-        c("Enzyme:Substrate complex", "Enzyme:Inhibitor complex"),
-        col = c('green', 'gray'),
-        lty = 1,
-        lwd = 2
-      )
-      plot(
-        out[, c("time", "P")],
-        type = 'l',
-        lty = 1,
-        ylim = c(0, max(c(xmax, ymax))),
-        xlab = 'Time',
-        ylab = "Product\nConcentration",
-        las = 1,
-        lwd = 2,
-        font.lab = 2,
-        cex = 1.35
-      )
-      if (input$I0 == 0) {
-        plot(
-          out[, c("S", "C1")],
-          type = 'l',
-          lwd = 2,
-          las = 1,
-          xlab = "Substrate\nConcentration",
-          ylab = "Enzyme:Substrate Complex\nConcentration",
-          font.lab = 2,
-          cex = 1.35,
-          xlim = c(0, 10 * ceiling(input$S0 / 10))
-        )
-        points(input$S0, 0, pch = 19)
-        legend("topright", "Intial condition", pch = 19)
-      } else{
-        plot(
-          NULL,
-          xlim = c(0, 1),
-          ylim = c(0, 1),
-          axes = F,
-          xlab = "",
-          ylab = ""
-        )
-      }
-      
+
+      par(mar = c(4.1, 5.1, 0.8, 0.8), xaxs = 'i', yaxs = 'i')
+      matplot(t(sol), type = 'l', las = 1, ylim = c(0, 10*ceiling(max(sol)/10)), lty = 1, lwd = 2, xlab = "Time", ylab = "Abundance")
+      legend("topright", c("vegetative", "flowering"), col = c(1, 2), lwd = 2)      
     })
+    
+    output$plot2 &lt;- renderPlot({
+      par(mar = c(4.1, 5.1, 0.8, 0.8), xaxs = 'i', yaxs = 'i')
+      plot(t(sol), type = 'l', las = 1, ylim = c(0, 10*ceiling(max(sol)/10)), lty = 1, lwd = 2, xlab = "Vegetative", ylab = "Flowering")
+      points(sol[, 1], pch = 19)
+      legend("topright", c("Dynamics", "Initial Condition"), col = c(1, 1), lwd = 2, lty = c(1, NA), pch = c(NA, 19))      
+      if(eig$values[idx] &gt; 0){
+        abline(a = 0, b = abs(eig$vectors[2, idx]/eig$vectors[1, idx]))
+      }
+    })
+    
   })
   
 }
