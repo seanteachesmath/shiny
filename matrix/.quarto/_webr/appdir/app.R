@@ -21,7 +21,7 @@ ui <- fluidPage(
         withMathJax(helpText("\\(\\beta = \\)")),
         min = 0,
         max = 100,
-        value = 30,
+        value = 10,
         step = 1
       ),
       sliderInput(
@@ -53,15 +53,23 @@ ui <- fluidPage(
         withMathJax(helpText("\\(t_{\\text{max}} = \\)")),
         min = 10,
         max = 100,
-        value = 50,
+        value = 10,
         step = 10
       ),
-    ),
+      actionButton(
+        "eig",
+        "Show dominant eigenvector"
+      ),
+      actionButton(
+        "clear",
+        "Clear"
+      ),
+      ),
     # Show a plot of the generated distribution
     mainPanel(withMathJax(
-      helpText("")
+      helpText("This is a tool to explore the behavior of \\[\\Big(\\begin{array}{c}V\\\\F\\end{array}\\Big)_{t + 1} = \\Big(\\begin{array}{cc}\\alpha & \\beta\\\\\\sigma & 0\\end{array}\\Big)\\Big(\\begin{array}{c}V\\\\F\\end{array}\\Big)_{t}.\\] The top plot shows dynamics against time, while the second plot shows something resembling the phase plane. See your notes for an interpretation of and rationale for parameters. For certain parameter values the tick mark labels might overlap axes labels.")
     ), 
-    plotOutput("plot1")),
+    plotOutput("plot1"),
     plotOutput("plot2"))
   )
 )
@@ -69,32 +77,26 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- function(input, output) {
   observe({
-    ## parameters
-    (parms <- c(
-      alpha = input$alpha,
-      beta = input$beta,
-      sigma = input$sigma
-    ))
-    ## vector of time steps
-    (times <- seq(0, input$tmax, by = 0.1))
-    ## initial conditions
-    (xstart <- c(
-      V0 = input$V0,
-      F0 = input$F0,
-    ))
-    
-    A <- matrix(c(alpha, beta, sigma, 0), nrow = 2, ncol = 2, byrow = TRUE)
+    A <- matrix(c(input$alpha, input$beta, input$sigma, 0), nrow = 2, ncol = 2, byrow = TRUE)
     N <- matrix(c(input$V0, input$F0), nrow = 2, ncol = 1, byrow = TRUE)
     eig <- eigen(A)
     
     idx <- which(eig$values == max(eig$values))
     
     sol <- N
-    for(i in 2:tmax){
+    for(i in 2:input$tmax){
       sol <- cbind(sol, A%*%sol[, i - 1])
     }
     # # # # # # # # # # # # # # # #
-    
+    showEig <- reactiveValues(val = FALSE)
+
+    observeEvent(input$eig, {
+      showEig$val <- TRUE
+    }) 
+    observeEvent(input$clear, {
+      showEig$val <- FALSE
+    }) 
+      
     output$plot1 <- renderPlot({
 
       par(mar = c(4.1, 5.1, 0.8, 0.8), xaxs = 'i', yaxs = 'i')
@@ -104,12 +106,13 @@ server <- function(input, output) {
     
     output$plot2 <- renderPlot({
       par(mar = c(4.1, 5.1, 0.8, 0.8), xaxs = 'i', yaxs = 'i')
-      plot(t(sol), type = 'l', las = 1, ylim = c(0, 10*ceiling(max(sol)/10)), lty = 1, lwd = 2, xlab = "Vegetative", ylab = "Flowering")
-      points(sol[, 1], pch = 19)
-      legend("topright", c("Dynamics", "Initial Condition"), col = c(1, 1), lwd = 2, lty = c(1, NA), pch = c(NA, 19))      
-      if(eig$values[idx] > 0){
-        abline(a = 0, b = eig$vectors[2, idx]/eig$vectors[1, idx])
-      }
+      plot(0:(input$tmax - 1), t(sol), type = 'l', las = 1, xlim = c(0, 10*ceiling(max(sol[1, ])/10)), ylim = c(0, 10*ceiling(max(sol[ 2, ])/10)), lty = 1, lwd = 2, xlab = "Vegetative", ylab = "Flowering")
+      points(sol[1, 1], sol[2, 1], pch = 19, col = "red")
+      legend("topright", c("Dynamics", "Initial Condition"), col = c(1, "red"), lwd = 2, lty = c(1, NA), pch = c(NA, 19))      
+      if(showEig$val == TRUE){
+        if(eig$values[idx] > 0){
+        abline(a = 0, b = abs(eig$vectors[2, idx]/eig$vectors[1, idx]))
+      }}
     })
     
   })

@@ -112,7 +112,7 @@ ul.task-list li input[type="checkbox"] {
 #|   shinylive does not work in self-contained HTML documents.
 #|   Please set `embed-resources: false` in your metadata.
 #| standalone: true
-#| viewerHeight: 600
+#| viewerHeight: 1000
 library(shiny)
 
 # Define UI for application that draws a histogram
@@ -168,13 +168,21 @@ ui &lt;- fluidPage(
         withMathJax(helpText("\\(t_{\\text{max}} = \\)")),
         min = 10,
         max = 100,
-        value = 50,
+        value = 10,
         step = 10
       ),
-    ),
+      actionButton(
+        "eig",
+        "Show dominant eigenvector"
+      ),
+      actionButton(
+        "clear",
+        "Clear"
+      ),
+      ),
     # Show a plot of the generated distribution
     mainPanel(withMathJax(
-      helpText("")
+      helpText("This is a tool to explore the behavior of \\[\\Big(\\begin{array}{c}V\\\\F\\end{array}\\Big)_{t + 1} = \\Big(\\begin{array}{cc}\\alpha &amp; \\beta\\\\\\sigma &amp; 0\\end{array}\\Big)\\Big(\\begin{array}{c}V\\\\F\\end{array}\\Big)_{t}.\\] The top plot shows dynamics against time, while the second plot shows something resembling the phase plane. See your notes for an interpretation of and rationale for parameters. For certain parameter values the tick mark labels might overlap axes labels.")
     ), 
     plotOutput("plot1"),
     plotOutput("plot2"))
@@ -195,22 +203,31 @@ server &lt;- function(input, output) {
       sol &lt;- cbind(sol, A%*%sol[, i - 1])
     }
     # # # # # # # # # # # # # # # #
-    
+    showEig &lt;- reactiveValues(val = FALSE)
+
+    observeEvent(input$eig, {
+      showEig$val &lt;- TRUE
+    }) 
+    observeEvent(input$clear, {
+      showEig$val &lt;- FALSE
+    }) 
+      
     output$plot1 &lt;- renderPlot({
 
       par(mar = c(4.1, 5.1, 0.8, 0.8), xaxs = 'i', yaxs = 'i')
-      matplot(t(sol), type = 'l', las = 1, ylim = c(0, 10*ceiling(max(sol)/10)), lty = 1, lwd = 2, xlab = "Time", ylab = "Abundance")
+      matplot(0:(input$tmax - 1), t(sol), type = 'l', las = 1, ylim = c(0, 10*ceiling(max(sol)/10)), lty = 1, lwd = 2, xlab = "Time", ylab = "Abundance")
       legend("topright", c("vegetative", "flowering"), col = c(1, 2), lwd = 2)      
     })
     
     output$plot2 &lt;- renderPlot({
       par(mar = c(4.1, 5.1, 0.8, 0.8), xaxs = 'i', yaxs = 'i')
-      plot(t(sol), type = 'l', las = 1, ylim = c(0, 10*ceiling(max(sol)/10)), lty = 1, lwd = 2, xlab = "Vegetative", ylab = "Flowering")
-      points(sol[, 1], pch = 19)
-      legend("topright", c("Dynamics", "Initial Condition"), col = c(1, 1), lwd = 2, lty = c(1, NA), pch = c(NA, 19))      
-      if(eig$values[idx] &gt; 0){
+      plot(t(sol), type = 'l', las = 1, xlim = c(0, 10*ceiling(max(sol[1, ])/10)), ylim = c(0, 10*ceiling(max(sol[ 2, ])/10)), lty = 1, lwd = 2, xlab = "Vegetative", ylab = "Flowering")
+      points(sol[1, 1], sol[2, 1], pch = 19, col = "red")
+      legend("topright", c("Dynamics", "Initial Condition"), col = c(1, "red"), lwd = 2, lty = c(1, NA), pch = c(NA, 19))      
+      if(showEig$val == TRUE){
+        if(eig$values[idx] &gt; 0){
         abline(a = 0, b = abs(eig$vectors[2, idx]/eig$vectors[1, idx]))
-      }
+      }}
     })
     
   })
@@ -296,7 +313,7 @@ shinyApp(ui = ui, server = server)</code></pre>
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/seanteachesmath\.github\.io\/shiny\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
