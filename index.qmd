@@ -1,0 +1,9 @@
+---
+title: "Shiny app Landing Page"
+format: html
+---
+
+# Introduction to Biological Dynamics
+
+- [Stage-structured plant population model](./matrix/index.qmd)
+
