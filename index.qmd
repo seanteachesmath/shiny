@@ -7,3 +7,12 @@ format: html
 
 - [Stage-structured plant population model](./matrix/index.qmd)
 
+# Technology for Professional Mathematics and Statistics
+
+- [Rectangle rules](./integration/index.qmd)
+
+
+# Bio-Calculus
+
+- [Rectangle rules](./integration/index.qmd)
+
