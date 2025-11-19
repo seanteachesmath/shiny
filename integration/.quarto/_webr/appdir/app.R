@@ -1,18 +1,3 @@
----
-title: "Riemann sums"
-format:
-  html:
-    grid:
-      body-width: 1400px
-    resources:
-      - shinylive-sw.js
-filters:
-  - shinylive
----
-
-```{shinylive-r}
-#| standalone: true
-#| viewerHeight: 1200
 # This is a Shiny web application. You can run the application by clicking
 # the 'Run App' button above.
 #
@@ -110,5 +95,3 @@ server <- function(input, output) {
 
 # Run the application 
 shinyApp(ui = ui, server = server)
-
-```

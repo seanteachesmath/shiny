@@ -112,7 +112,7 @@ ul.task-list li input[type="checkbox"] {
 #|   shinylive does not work in self-contained HTML documents.
 #|   Please set `embed-resources: false` in your metadata.
 #| standalone: true
-#| viewerHeight: 600#
+#| viewerHeight: 1200
 # This is a Shiny web application. You can run the application by clicking
 # the 'Run App' button above.
 #
@@ -288,7 +288,7 @@ shinyApp(ui = ui, server = server)
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/seanteachesmath\.github\.io\/shiny\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
