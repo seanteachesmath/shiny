@@ -34,7 +34,9 @@ ui <- fluidPage(
                         "Number of rectangles:",
                         min = 1,
                         max = 50,
-                        value = 30)
+                        value = 30),
+            textInput("expr", label = "Enter function...", value = "x*exp(-x)")
+
         ),# ends sidebarPanel
 
         # Show a plot of the generated distribution

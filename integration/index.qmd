@@ -12,7 +12,7 @@ filters:
 
 ```{shinylive-r}
 #| standalone: true
-#| viewerHeight: 1200
+#| viewerHeight: 1000
 # This is a Shiny web application. You can run the application by clicking
 # the 'Run App' button above.
 #
@@ -49,13 +49,15 @@ ui <- fluidPage(
                         "Number of rectangles:",
                         min = 1,
                         max = 50,
-                        value = 30)
+                        value = 30),
+            textInput("expr", label = "f(x) = ", value = "x*exp(-x)", placeholder = "e.g., 5*x+7")
+
         ),# ends sidebarPanel
 
         # Show a plot of the generated distribution
         mainPanel(
           withMathJax(
-            helpText("Choose a range that represents your limits of integration. To the left choose values for \\(a\\), \\(b\\), and \\(n\\) to approximate \\[\\int_{a}^{b} xe^{-x}\\,dx.\\]")
+            helpText("Choose a range that represents your limits of integration. To the left choose values for \\(a\\), \\(b\\), and \\(n\\) to approximate \\[\\int_{a}^{b} f(x) \\,dx \\approx \\Big( \\text{area of \\(n\\) rectangles}\\Big).\\] When  you enter the formula, use * for multiplication. The graph will update, but  you must enter something for the formula, preferably involving the variable \\(x\\).")
             ),
            plotOutput("rectangles")
         )# end mainPanel
@@ -65,19 +67,23 @@ ui <- fluidPage(
 # Define server logic required to graph a function and rectangles for area approximation
 server <- function(input, output) {
 
-    output$rectangles <- renderPlot({
+        output$rectangles <- renderPlot({
         # generate bins based on input$bins from ui.R
-        f <- function(x)x*exp(-x)
-        
+        if(grepl("x", parse(text = input$expr), ignore.case = TRUE) & length(input$expr)>0){
+        f <- function(x)eval(parse(text = tolower(input$expr)))
+        }else if(length(input$expr)>0){
+        f <- function(x) eval(parse(text = input$expr)) + 0*x
+        }
         # this will let us use the sliders by their assigned variable name rather than require "input$" each time
         a <- input$limits[1]
         b <- input$limits[2]
         n <- input$n
         
+        ymax <- ceiling(max(sapply(seq(a, b, length = n), f)))
         # initialize area, find 'dx', and start the plot
         area <- 0
         dx <- (b - a)/n
-        plot(f, xlim = c(min(c(0, a)), b), ylim = c(0, 0.5), las = 1, lwd = 2)
+        plot(f, xlim = c(min(c(0, a)), b), ylim = c(0, ymax), las = 1, lwd = 2)
         
         # step over each subinterval
         for(i in 1:n){
@@ -100,8 +106,7 @@ server <- function(input, output) {
         }
         # to add our answer, we plotted a point to orient outselves around the graph
         # points(b, 0.3)
-        text(b, 0.45, paste("Estimate = ", area), pos = 2)
-        text(b, 0.4, paste("Actual = ", integrate(f, lower = a, upper = b)$value), pos = 2)
+        mtext(paste("Estimate = ", area, ", Actual = ", integrate(f, lower = a, upper = b)$value, sep = ''), 3)
         # more clever would be to calculate the max value of f(x) on the interval and use that rather than 0.45, 0.4
         # I changed those a bit after class
         # then if we allowed sliders for additional parameters in the function, the graph and text would update
