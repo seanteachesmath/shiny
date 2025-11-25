@@ -51,7 +51,6 @@ ui <- fluidPage(
                         max = 50,
                         value = 30),
             textInput("expr", label = "f(x) = ", value = "x*exp(-x)", placeholder = "e.g., 5*x+7")
-
         ),# ends sidebarPanel
 
         # Show a plot of the generated distribution
