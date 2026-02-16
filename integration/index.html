@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.24">
+<meta name="generator" content="quarto-1.8.27">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -36,7 +36,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dc55a5b9e770e841cd82e46aadbfb9b0.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap-fd207a1b51fa9a482616a7f739ebbd32.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
@@ -139,19 +139,12 @@ ui &lt;- fluidPage(
                         max = 50,
                         value = c(0, 1),
                         step = 0.1),
-            #sliderInput("b",
-            #            "Upper limits:",
-            #            min = 0,
-            #            max = 50,
-            #            value = 10,
-            #            step = 0.1),
             sliderInput("n",
                         "Number of rectangles:",
                         min = 1,
                         max = 50,
                         value = 30),
             textInput("expr", label = "f(x) = ", value = "x*exp(-x)", placeholder = "e.g., 5*x+7")
-
         ),# ends sidebarPanel
 
         # Show a plot of the generated distribution
@@ -169,10 +162,10 @@ server &lt;- function(input, output) {
 
         output$rectangles &lt;- renderPlot({
         # generate bins based on input$bins from ui.R
-        if(grepl("x", parse(text = input$expr), ignore.case = TRUE) &amp; length(input$expr)&gt;0){
-        f &lt;- function(x)eval(parse(text = tolower(input$expr)))
+        if(grepl("x", parse(text = req(input$expr)), ignore.case = TRUE) &amp; length(input$expr)&gt;0){
+        f &lt;- function(x)eval(parse(text = tolower(req(input$expr))))
         }else if(length(input$expr)&gt;0){
-        f &lt;- function(x) eval(parse(text = input$expr)) + 0*x
+        f &lt;- function(x) eval(parse(text = req(input$expr))) + 0*x
         }
         # this will let us use the sliders by their assigned variable name rather than require "input$" each time
         a &lt;- input$limits[1]
@@ -214,8 +207,7 @@ server &lt;- function(input, output) {
 }
 
 # Run the application 
-shinyApp(ui = ui, server = server)
-</code></pre>
+shinyApp(ui = ui, server = server)</code></pre>
 
 
 
