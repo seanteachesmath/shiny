@@ -1,0 +1,12 @@
+name: chem
+title: chem
+username: seanteachesmath
+account: seanteachesmath
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 15885335
+bundleId: 11093029
+url: https://seanteachesmath.shinyapps.io/chem/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE

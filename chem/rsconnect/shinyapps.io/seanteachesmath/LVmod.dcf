@@ -1,0 +1,13 @@
+name: LVmod
+title: LVmod
+username:
+account: seanteachesmath
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 8674970
+bundleId: 7008612
+url: https://seanteachesmath.shinyapps.io/LVmod/
+when: 1679802318.52701
+lastSyncTime: 1679802318.52704
+asMultiple: FALSE
+asStatic: FALSE

@@ -1,0 +1,12 @@
+name: derivatives
+title: derivatives
+username:
+account: seanteachesmath
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3211027
+bundleId: 3848158
+url: https://seanteachesmath.shinyapps.io/derivatives/
+when: 1605113988.95436
+asMultiple: FALSE
+asStatic: FALSE
