@@ -132,7 +132,7 @@ ui &lt;- fluidPage(
     sidebarPanel(
       selectInput("model", "Select updating function", c(Logistic = "logistic", Custom = "user")),
       conditionalPanel(
-        condition = "input.model == 'logisitic'",
+        condition = "input.model == 'logistic'",
         sliderInput("r",
                     "Initial Value",
                     min = 0,
